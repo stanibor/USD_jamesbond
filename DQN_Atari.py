@@ -11,7 +11,10 @@ import cv2
 #from scipy.misc import imresize
 import matplotlib.pyplot as plt
 
-device = torch.device("cpu:0")
+# while training on colab
+device = torch.device("cuda:0")
+# while training on laptop/PC without NVIDIA GPU
+# device = torch.device("cpu:0")
 dtype = torch.float
 
 class Atari_Wrapper(gym.Wrapper):
@@ -294,27 +297,34 @@ def make_transitions(obs, actions, rewards, dones):
 
 env_name = 'Jamesbond-v0'
 
-# hyperparameter
-
+# # hyperparameter
+#
 num_stacked_frames = 4 #agent history length
 
-replay_memory_size = 250_000 #1_000_000
-min_replay_size_to_update = 25_000 #10_000
+# replay_memory_size = 250_000 #1_000_000
+replay_memory_size = 2500 #1_000_000
+min_replay_size_to_update = 250 #10_000
 
 lr = 6e-5 #25e-5
 gamma = 0.99
 minibatch_size = 32
+#steps_rollout = 16
 steps_rollout = 16
 
 start_eps = 1
 final_eps = 0.1
 
-final_eps_frame = 1_000_000
-total_steps = 20_000_000
+final_eps_frame = 10_000
+# final_eps_frame = 1_000_000
+
+# total_steps = 20_000_000
+total_steps = 200_000
 
 target_net_update = 625  # 10000 steps
 
-save_model_steps = 500_000
+# number of steps after which the model is saved
+# save_model_steps = 500_000
+save_model_steps = 5000
 
 # init
 raw_env = gym.make(env_name)
@@ -400,7 +410,8 @@ while num_steps < total_steps:
         target_agent.load_state_dict(agent.state_dict())
 
     # print time
-    if num_steps % 50000 < steps_rollout:
+#    if num_steps % 50000 < steps_rollout:
+    if num_steps % 5000 < steps_rollout:
         end_time = time.time()
         print(f'*** total steps: {num_steps} | time(50K): {end_time - start_time} ***')
         start_time = time.time()
