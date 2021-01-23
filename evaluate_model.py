@@ -17,7 +17,10 @@ total_episodes = 14
 eval_epsilon = 0.01
 num_stacked_frames = 4
 
-device = torch.device("cpu:0")
+#while training on colab
+device = torch.device("cuda:0")
+#while training on laptop/PC without NVIDIA GPU
+#device = torch.device("cpu:0")
 dtype = torch.float
 
 class Atari_Wrapper(gym.Wrapper):
@@ -194,6 +197,7 @@ class Agent(nn.Module):
         self.eps = epsilon
 
 f = open(env_name+"-Eval"+".csv","w")
+f.write("steps,return\n")
 
 for filename in os.listdir():
 

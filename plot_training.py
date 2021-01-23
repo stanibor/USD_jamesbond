@@ -5,10 +5,10 @@ import pandas as pd
 plt.rcParams["figure.figsize"] = (8,5)
 filename = "training_info.csv"
 eval_name = "Jamesbond-v0-Eval.csv"
-n_steps = 150
+n_steps = 10
 f = pd.read_csv(filename)
 g = pd.read_csv(eval_name)
-mean  = f[" return"].rolling(n_steps).mean()
+mean = f[" return"].rolling(n_steps).mean()
 deviation = f[" return"].rolling(n_steps).std()
 under_line = (mean-deviation)
 over_line = (mean+deviation)
