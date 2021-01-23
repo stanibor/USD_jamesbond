@@ -40,8 +40,8 @@ class Atari_Wrapper(gym.Wrapper):
             self.frame_cutout_h = (25,-7)
             self.frame_cutout_w = (7,-7)
         elif "Jamesbond" in env_name:
-            self.frame_cutout_h  = (25,-7)
-            self.frame_cutout_w = (7,-7)
+            self.frame_cutout_h  = (38,-20)
+            self.frame_cutout_w = (8,-1)
         else:
             # no cutout
             self.frame_cutout_h = (0,-1)
