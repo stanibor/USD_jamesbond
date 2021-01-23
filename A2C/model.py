@@ -28,6 +28,7 @@ def weights_init(m):
         m.weight.data.uniform_(-w_bound, w_bound)
         m.bias.data.fill_(0)
 
+
 #A3C Neural Network Model
 class ActorCritic(torch.nn.Module):
 
