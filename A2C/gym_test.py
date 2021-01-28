@@ -36,7 +36,7 @@ for i_episode in range(args.num_episodes):
             if i_episode % args.render_freq == 0:
                 env.render()
         if done:
-            model.load_state_dict(torch.load('./models/A2C_Jamesbond_1600_r0_860.pkl'))
+            model.load_state_dict(torch.load('./almost_last_models/A2C_Jamesbond_1600_r0_860.pkl'))
             hx = Variable(torch.zeros(1, 256))
         else:
             hx = Variable(hx.data)

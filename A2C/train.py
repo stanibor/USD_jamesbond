@@ -1,6 +1,7 @@
 import math
 import os
 import sys
+import csv
 
 import torch
 from tqdm import tqdm
@@ -10,14 +11,16 @@ from envs import create_atari_env
 from model import ActorCritic
 from torch.autograd import Variable
 
-def train(args, model, env, optimizer=None):
+
+def train(args, model, env, optimizer=None, *, iteration=0):
     torch.manual_seed(args.seed)
 
     # env = create_atari_env(args.env_name)
     # env = create_car_racing_env()
     print("env: ", env.observation_space.shape, env.action_space)
     # env.seed(args.seed)
-
+    file = open('output.csv', 'a+', newline='')
+    writer = csv.writer(file)
     # model = ActorCritic(env.observation_space.shape[0], env.action_space)
 
     if optimizer is None:
@@ -31,7 +34,7 @@ def train(args, model, env, optimizer=None):
     done = True
 
     episode_length = 0
-    lives = 0
+    sum_reward = 0
     # u = 0
     # while u < args.num_updates:
     for u in tqdm(torch.arange(args.num_updates)):
@@ -40,7 +43,7 @@ def train(args, model, env, optimizer=None):
         # Sync with the shared model
         # model.load_state_dict(shared_model.state_dict())
         if done:
-            hx = Variable(torch.zeros(1, 256))
+            hx = Variable(torch.zeros(1, 512))
         else:
             hx = Variable(hx.data)
 
@@ -65,11 +68,14 @@ def train(args, model, env, optimizer=None):
             # if ('ale.lives' in info):
             #     reward -= (lives > info['ale.lives']) * 10 # punishment for dying
             #     lives = info['ale.lives']
+            sum_reward += reward
 
             reward = max(min(reward, 1), -1)
 
             if done:
                 episode_length = 0
+                writer.writerow([iteration*args.num_updates+u.item(), sum_reward])
+                sum_reward = 0
                 state = env.reset()
 
             state = torch.from_numpy(state)
@@ -110,3 +116,4 @@ def train(args, model, env, optimizer=None):
 
         optimizer.step()
         # u += 1
+    file.close()
