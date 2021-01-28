@@ -29,6 +29,8 @@ parser.add_argument('--max-episode-length', type=int, default=10000, metavar='M'
 parser.add_argument('--env-name', default='Jamesbond-v0', metavar='ENV',
                     help='environment to train on (default: Jamesbond-v0)')
 
+save_interval = 100
+minimal_test_reward = 200
 
 if __name__ == '__main__':
     args = parser.parse_args()
@@ -36,14 +38,18 @@ if __name__ == '__main__':
     torch.manual_seed(args.seed)
 
     env = create_jamesbond_env(args.env_name)
+    test_env = create_jamesbond_env(args.env_name)
     # env = create_car_racing_env()
     model = ActorCritic(env.observation_space.shape[0], env.action_space)
 
     itr = 0
+    maximal_test_reward = minimal_test_reward
     while True:
         train(args, model, env)
-        reward_sum, episode_length = test(args, model, env)
-        print(f"episode reward {reward_sum}, episode length {episode_length}")
+        reward_sum, episode_length = test(args, model, test_env)
+        print(f"Iteration: {itr}, episode reward {reward_sum}, episode length {episode_length}")
+        if itr % save_interval == 0 or (reward_sum >= maximal_test_reward):
+            torch.save(model.state_dict(), (f'./models/A2C_Jamesbond_{itr}_r{int(reward_sum)}_{int(episode_length)}.pkl'))
+            maximal_test_reward = max(maximal_test_reward, reward_sum)
+
         itr += 1
-        if itr % 30 == 0:
-            torch.save(model.state_dict(), ('./A2C_Jamesbond.pkl'))

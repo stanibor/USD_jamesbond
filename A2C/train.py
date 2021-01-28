@@ -26,11 +26,12 @@ def train(args, model, env, optimizer=None):
     model.train()
 
     state = env.reset()
-    print ("state: ", state.shape)
+    # print ("state: ", state.shape)
     state = torch.from_numpy(state)
     done = True
 
     episode_length = 0
+    lives = 0
     # u = 0
     # while u < args.num_updates:
     for u in tqdm(torch.arange(args.num_updates)):
@@ -59,10 +60,14 @@ def train(args, model, env, optimizer=None):
             action = torch.multinomial(prob, 1)
             log_prob = log_prob.gather(1, Variable(action))
 
-            state, reward, done, _ = env.step(action.numpy())
+            state, reward, done, info = env.step(action.numpy())
             done = done or episode_length >= args.max_episode_length
-            # reward = max(min(reward, 1), -1)
+            reward = max(min(reward, 1), -1)
+            if ('ale.lives' in info):
+                reward -= (lives > info['ale.lives']) * 10 # punishment for dying
+                lives = info['ale.lives']
 
+            reward = max(min(reward, 1), -1)
 
             if done:
                 episode_length = 0
