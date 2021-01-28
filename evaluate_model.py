@@ -34,7 +34,7 @@ for filename in os.listdir():
         continue
 
     print("load file name", filename)
-    agent = torch.load(filename).to(device)
+    agent = torch.load(filename, map_location='cpu').to(device)
     agent.set_epsilon(eval_epsilon)
     agent.eval()
 
