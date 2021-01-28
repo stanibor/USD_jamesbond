@@ -19,7 +19,7 @@ if __name__ == '__main__':
     cv2.namedWindow('robot', cv2.WINDOW_NORMAL)
     cv2.resizeWindow('robot', 600, 600)
 
-    preprocessor = FramePreprocessor(paddings=(34, -20, 7, -1), dsize=(80, 80), color_weights=(0.1, 0.8, 0.1))
+    preprocessor = FramePreprocessor(paddings=(34, -20, 7, -1), dsize=(84, 84), color_weights=(0.1, 0.8, 0.1))
 
     while not done:
         action = env.action_space.sample()
