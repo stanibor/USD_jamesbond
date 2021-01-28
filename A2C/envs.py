@@ -56,8 +56,8 @@ def _process_frame_bond(frame):
 class AtariJamesbond(gym.ObservationWrapper):
     def __init__(self, env=None):
         super(AtariJamesbond, self).__init__(env)
-        self.observation_space = Box(0.0, 1.0, [1, 80, 80])
-        self.preprocessor = FramePreprocessor((34, -20, 8, -1), (80, 80), (0.1, 0.8, 0.1))
+        self.observation_space = Box(0.0, 1.0, [1, 84, 84])
+        self.preprocessor = FramePreprocessor((34, -20, 8, -1), (84, 84), (0.1, 0.8, 0.1))
     def observation(self, observation_n):
         return self.preprocessor.process(observation_n)
 

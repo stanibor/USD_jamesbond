@@ -62,10 +62,9 @@ def train(args, model, env, optimizer=None):
 
             state, reward, done, info = env.step(action.numpy())
             done = done or episode_length >= args.max_episode_length
-            reward = max(min(reward, 1), -1)
-            if ('ale.lives' in info):
-                reward -= (lives > info['ale.lives']) * 10 # punishment for dying
-                lives = info['ale.lives']
+            # if ('ale.lives' in info):
+            #     reward -= (lives > info['ale.lives']) * 10 # punishment for dying
+            #     lives = info['ale.lives']
 
             reward = max(min(reward, 1), -1)
 
