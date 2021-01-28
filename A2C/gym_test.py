@@ -6,7 +6,7 @@ import gym
 from model import ActorCritic
 from envs import create_jamesbond_env
 
-parser = argparse.ArgumentParser(description='A3C_EVAL')
+parser = argparse.ArgumentParser(description='A2C_EVAL')
 parser.add_argument('--env-name', default='Jamesbond-v0', metavar='ENV',
                     help='environment to train on (default: Jamesbond-v0)')
 parser.add_argument('--num-episodes', type=int, default=20, metavar='NE',
@@ -20,6 +20,7 @@ parser.add_argument('--max-episode-length', type=int, default=100000, metavar='M
 args = parser.parse_args()
 
 env = create_jamesbond_env(args.env_name)
+
 model = ActorCritic(env.observation_space.shape[0], env.action_space)
 model.eval()
 done = True
@@ -35,14 +36,14 @@ for i_episode in range(args.num_episodes):
             if i_episode % args.render_freq == 0:
                 env.render()
         if done:
-            model.load_state_dict(torch.load('./A2C_Jamesbond.pkl'))
-            hx = Variable(torch.zeros(1, 256), volatile=True)
+            model.load_state_dict(torch.load('./models/A2C_Jamesbond_1600_r0_860.pkl'))
+            hx = Variable(torch.zeros(1, 256))
         else:
-            hx = Variable(hx.data, volatile=True)
+            hx = Variable(hx.data)
         env.render()
         state = torch.from_numpy(state).float()
         value, logit, hx = model(
-            (Variable(state.unsqueeze(0), volatile=True), hx))
+            (Variable(state.unsqueeze(0)), hx))
         probability = F.softmax(logit, dim=-1)
         action = probability.max(1)[1].data.numpy()
         state, reward, done, _ = env.step(action[0])
