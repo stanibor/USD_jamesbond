@@ -19,7 +19,7 @@ def train(args, model, env, optimizer=None, *, iteration=0):
     # env = create_car_racing_env()
     print("env: ", env.observation_space.shape, env.action_space)
     # env.seed(args.seed)
-    file = open('output.csv', 'a+', newline='')
+    file = open('training_info.csv', 'a+', newline='')
     writer = csv.writer(file)
     # model = ActorCritic(env.observation_space.shape[0], env.action_space)
 
